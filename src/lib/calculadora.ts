@@ -40,6 +40,7 @@ export interface EstadoCalculadora {
 
 export type AccionCalculadora =
   | { tipo: "digito"; digito: string }
+  | { tipo: "operacionVoz"; primerNumero: number; operador: Operador; segundoNumero: number }
   | { tipo: "decimal" }
   | { tipo: "operador"; operador: Operador }
   | { tipo: "igual" }
@@ -404,11 +405,45 @@ function aplicarPorcentaje(estado: EstadoCalculadora): EstadoCalculadora {
   };
 }
 
+function resolverOperacionVoz(
+  estado: EstadoCalculadora,
+  primerNumero: number,
+  operador: Operador,
+  segundoNumero: number,
+): EstadoCalculadora {
+  const resultado = calcular(primerNumero, segundoNumero, operador);
+  if (!resultado.ok) return estadoConError(estado, resultado.mensaje);
+
+  const primero = formatear(primerNumero);
+  const segundo = formatear(segundoNumero);
+  const pantalla = formatear(resultado.valor);
+  const expresion = `${formatearParaMostrar(primero)} ${operador} ${formatearParaMostrar(segundo)} =`;
+
+  return {
+    ...estado,
+    pantalla,
+    anterior: null,
+    operador: null,
+    esperando: true,
+    expresion,
+    error: false,
+    repeticion: { operador, operando: segundoNumero },
+    historial: agregarHistorial(estado.historial, expresion, pantalla),
+  };
+}
+
 export function reductorCalculadora(
   estado: EstadoCalculadora,
   accion: AccionCalculadora,
 ): EstadoCalculadora {
   switch (accion.tipo) {
+    case "operacionVoz":
+      return resolverOperacionVoz(
+        estado,
+        accion.primerNumero,
+        accion.operador,
+        accion.segundoNumero,
+      );
     case "digito":
       return ingresarDigito(estado, accion.digito);
     case "decimal":

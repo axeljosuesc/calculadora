@@ -30,6 +30,11 @@ export function useCalculadora({
     [],
   );
   const igual = useCallback(() => despachar({ tipo: "igual" }), []);
+  const operacionVoz = useCallback(
+    (primerNumero: number, operador: Operador, segundoNumero: number) =>
+      despachar({ tipo: "operacionVoz", primerNumero, operador, segundoNumero }),
+    [],
+  );
   const limpiar = useCallback(() => despachar({ tipo: "limpiar" }), []);
   const borrar = useCallback(() => despachar({ tipo: "borrar" }), []);
   const cambiarSigno = useCallback(
@@ -111,6 +116,7 @@ export function useCalculadora({
     decimal,
     operador,
     igual,
+    operacionVoz,
     limpiar,
     borrar,
     cambiarSigno,

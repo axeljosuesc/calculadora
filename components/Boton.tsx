@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, Platform, StyleSheet, Text } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import { colores } from "../src/tema/colores";
 
@@ -26,6 +27,18 @@ export default function Boton({
   etiqueta,
   deshabilitado = false,
 }: BotonProps) {
+  const presionar = () => {
+    if (Platform.OS !== "web") {
+      const estilo = valor === "="
+        ? Haptics.ImpactFeedbackStyle.Medium
+        : valor === "AC"
+          ? Haptics.ImpactFeedbackStyle.Heavy
+          : Haptics.ImpactFeedbackStyle.Light;
+      void Haptics.impactAsync(estilo).catch(() => undefined);
+    }
+    onPress?.();
+  };
+
   return (
     <Pressable
       testID={`tecla-${valor}`}
@@ -33,7 +46,7 @@ export default function Boton({
       accessibilityLabel={etiqueta ?? valor}
       accessibilityState={{ disabled: deshabilitado }}
       disabled={deshabilitado}
-      onPress={onPress}
+      onPress={presionar}
       android_ripple={{ color: "rgba(255, 255, 255, 0.45)" }}
       style={({ pressed }) => [
         styles.boton,
