@@ -8,7 +8,11 @@
     "scheme": "calculadora",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Permite que Calculadora convierta tu voz en operaciones.",
+        "NSMicrophoneUsageDescription": "Permite que Calculadora use el micrófono para dictar operaciones."
+      }
     },
     "android": {
       "package": "com.axeljosuesc.calculadora",
@@ -18,7 +22,10 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -49,6 +56,16 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "c0ef63cf-202e-4f24-9db8-561f6b73fcd2"
+      }
     }
   }
 }
